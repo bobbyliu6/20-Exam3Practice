@@ -6,8 +6,8 @@ This problem provides practice at:
 
 Authors: David Mutchler, Vibha Alangar, Matt Boutell, Dave Fisher,
          Mark Hays, Amanda Stouder, Aaron Wilkin, their colleagues,
-         and PUT_YOUR_NAME_HERE.
-"""  # TODO: 1. PUT YOUR NAME IN THE ABOVE LINE.
+         and Weizhou Liu.
+"""  # DONE: 1. PUT YOUR NAME IN THE ABOVE LINE.
 
 ###############################################################################
 # Students:
@@ -44,27 +44,46 @@ def run_test_hourglass():
     print('--------------------------------------------------')
     print('Testing the   hourglass   function:')
     print('--------------------------------------------------')
-
     test1 = '(n = 3, radius = 40, blue)'
     test2 = '(n = 8, radius = 15, green)'
     title1 = 'Hourglass, two tests: {} and {}'.format(test1, test2)
     window1 = rg.RoseWindow(600, 500, title1)
-
     hourglass(window1, 3, rg.Point(150, 200), 40, 'blue')
     hourglass(window1, 8, rg.Point(450, 250), 15, 'green')
-
     window1.close_on_mouse_click()
-
     test3 = '(n = 6, radius = 30, red)'
     title2 = 'Hourglass, one more test: {}'.format(test3)
     window2 = rg.RoseWindow(400, 700, title2)
-
     hourglass(window2, 6, rg.Point(200, 350), 30, 'red')
-
     window2.close_on_mouse_click()
-
-
 def hourglass(window, n, point, radius, color):
+    xc = point.x
+    yc = point.y
+    xc_start = xc
+    original_xc_start = xc_start
+    original_yc = yc
+    up_down = 1
+    for k in range(n * 2):
+        if k == n:
+            up_down = -1
+            xc_start = original_xc_start
+            yc = original_yc
+            xc = xc_start
+        if up_down == 1:
+            cols = k + 1
+        else:
+            cols = k + 1 - n
+        for j in range(cols):
+            circle = rg.Circle(rg.Point(xc, yc), radius)
+            circle.fill_color = color
+            circle.attach_to(window)
+            line = rg.Line(rg.Point(xc - radius, yc), rg.Point(xc + radius, yc))
+            line.attach_to(window)
+            xc += 2 * radius
+        yc -= up_down * radius * (3 ** 0.5)
+        xc_start -= radius
+        xc = xc_start
+    window.render()
     """
     See   hourglass_picture.pdf   in this project for pictures that may
     help you better understand the following specification:
@@ -90,7 +109,7 @@ def hourglass(window, n, point, radius, color):
     a color that rosegraphics understands.
     """
     # -------------------------------------------------------------------------
-    # TODO: 2. Implement and test this function.
+    # DONE: 2. Implement and test this function.
     #       We provided some tests for you (above).
     # -------------------------------------------------------------------------
     ###########################################################################
@@ -138,6 +157,18 @@ def run_test_many_hourglasses():
 
 
 def many_hourglasses(window, square, m, colors):
+    point = square.center
+    radius = square.length_of_each_side / 2
+    t = 0
+    for k in range(m):
+        hourglass(window, k + 1, point, radius, colors[t])
+        t += 1
+        if t >= len(colors):
+            t = 0
+        rect = rg.Rectangle(rg.Point(point.x - radius * (k + 1), point.y - radius * (k * 3 ** 0.5 + 1)), rg.Point(point.x + radius * (k + 1), point.y + radius * (k * 3 ** 0.5 + 1)))
+        rect.attach_to(window)
+        point.x += (2 * k + 3) * radius
+    window.render()
     """
     See   many_hourglasses_picture.pdf   in this project for pictures that may
     help you better understand the following specification:
@@ -164,7 +195,7 @@ def many_hourglasses(window, square, m, colors):
     each of which denotes a color that rosegraphics understands.
     """
     # -------------------------------------------------------------------------
-    # TODO: 3. Implement and test this function.
+    # DONE: 3. Implement and test this function.
     #       We provided some tests for you (above).
     # -------------------------------------------------------------------------
     ###########################################################################
